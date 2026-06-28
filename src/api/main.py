@@ -11,6 +11,7 @@ import hmac
 import hashlib
 import asyncio
 from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from src.agent.graph import process_message
 from src.shared.db import init_db, is_already_processed, mark_as_processed
@@ -25,6 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(admin_router)
+app.mount("/dashboard", StaticFiles(directory="src/static", html=True), name="static")
 
 META_TOKEN     = os.getenv("META_ACCESS_TOKEN")
 WA_PHONE_ID    = os.getenv("WHATSAPP_PHONE_NUMBER_ID")

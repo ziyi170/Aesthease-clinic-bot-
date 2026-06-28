@@ -1,7 +1,3 @@
-"""
-RAG knowledge base using JSONLoader + jq_schema (from Repo 2 pattern).
-Loads faq/data.json, embeds with OpenAI, stores in ChromaDB.
-"""
 import os
 import json
 import chromadb
@@ -13,21 +9,17 @@ CHROMA_PATH = os.getenv("CHROMA_PATH", "data/chroma_db")
 
 def get_rag_collection():
     client = chromadb.PersistentClient(path=CHROMA_PATH)
-    openai_ef = embedding_functions.OpenAIEmbeddingFunction(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        model_name="text-embedding-3-small"
+    # 使用本地 sentence-transformers，完全免费，不需要任何 API key
+    ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="all-MiniLM-L6-v2"
     )
     return client.get_or_create_collection(
         name="clinic_faq",
-        embedding_function=openai_ef
+        embedding_function=ef
     )
 
 
 def index_faq_documents():
-    """
-    Load faq/data.json using jq_schema pattern (Repo 2).
-    Each FAQ entry becomes one document: question + answer combined.
-    """
     with open(FAQ_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -35,7 +27,6 @@ def index_faq_documents():
     documents, ids = [], []
 
     for i, item in enumerate(data):
-        # jq_schema pattern: combine question + answer into one searchable chunk
         doc = f"Q: {item['question']}\nA: {item['answer']}"
         documents.append(doc)
         ids.append(f"faq_{i}")
@@ -45,7 +36,6 @@ def index_faq_documents():
 
 
 def query_faq(question: str, n_results: int = 3) -> str:
-    """Search the knowledge base and return relevant FAQ text."""
     collection = get_rag_collection()
     results = collection.query(query_texts=[question], n_results=n_results)
     docs = results.get("documents", [[]])[0]

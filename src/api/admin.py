@@ -100,3 +100,14 @@ def get_messages(phone: str, x_admin_token: str = Header(None)):
     ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+
+@router.get("/conversation-phones")
+def get_conversation_phones(x_admin_token: str = Header(None)):
+    require_auth(x_admin_token)
+    conn = get_connection()
+    rows = conn.execute(
+        "SELECT DISTINCT phone FROM messages ORDER BY phone"
+    ).fetchall()
+    conn.close()
+    return [{"phone": r["phone"]} for r in rows]

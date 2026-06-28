@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AesthEase Clinic — Admin</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8f7f5;color:#1a1a1a;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#fff;border-right:1px solid #eee;padding:1.5rem 1rem;display:flex;flex-direction:column;gap:4px}
+.logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:1.5rem}
+.logo-dot{width:32px;height:32px;border-radius:10px;background:#D4537E;display:flex;align-items:center;justify-content:center}
+.logo-dot i{color:#fff;font-size:18px}
+.logo-text{font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.2}
+.logo-sub{font-size:11px;color:#888}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;text-decoration:none;transition:background 0.15s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#fbeaf0;color:#D4537E;font-weight:500}
+.nav-item i{font-size:18px;width:20px}
+.main{margin-left:220px;padding:2rem;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.topbar h1{font-size:20px;font-weight:600}
+.auth-row{display:flex;gap:8px}
+.auth-row input{font-size:13px;padding:7px 12px;border:1px solid #e5e5e5;border-radius:8px;width:220px;outline:none}
+.auth-row input:focus{border-color:#D4537E}
+.auth-row button{font-size:13px;padding:7px 16px;border:1px solid #e5e5e5;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px}
+.auth-row button:hover{background:#f5f5f5}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:2rem}
+.stat{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px 18px}
+.stat-label{font-size:12px;color:#888;margin-bottom:8px}
+.stat-value{font-size:28px;font-weight:600;color:#1a1a1a}
+.stat-sub{font-size:11px;color:#aaa;margin-top:4px}
+.card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.card-header{padding:14px 18px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between}
+.card-header h2{font-size:14px;font-weight:600}
+.filter-row{display:flex;gap:8px}
+.filter-row select{font-size:13px;padding:5px 10px;border:1px solid #e5e5e5;border-radius:6px;background:#fff;cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#fafafa;padding:10px 18px;text-align:left;font-weight:500;color:#888;font-size:12px;border-bottom:1px solid #eee}
+td{padding:12px 18px;border-bottom:1px solid #f5f5f5;color:#1a1a1a;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-confirmed{background:#eaf3de;color:#3b6d11}
+.badge-cancelled{background:#fcebeb;color:#a32d2d}
+.badge-wa{background:#e1f5ee;color:#0f6e56}
+.badge-fb{background:#e6f1fb;color:#185fa5}
+.badge-ig{background:#fbeaf0;color:#993556}
+.btn-sm{font-size:12px;padding:4px 10px;border:1px solid #e5e5e5;border-radius:6px;background:#fff;cursor:pointer}
+.btn-sm:hover{background:#fcebeb;color:#a32d2d;border-color:#f09595}
+.page{display:none}
+.page.active{display:block}
+.messages{display:flex;flex-direction:column;gap:10px;padding:1rem;max-height:440px;overflow-y:auto}
+.msg{display:flex;gap:8px;align-items:flex-end}
+.msg.bot{flex-direction:row-reverse}
+.bubble{max-width:65%;padding:9px 14px;border-radius:14px;font-size:13px;line-height:1.55}
+.msg.user .bubble{background:#f0f0f0;color:#1a1a1a;border-radius:14px 14px 14px 4px}
+.msg.bot .bubble{background:#fbeaf0;color:#4b1528;border-radius:14px 14px 4px 14px}
+.msg-time{font-size:11px;color:#aaa;margin-top:3px}
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.avatar-user{background:#e6f1fb;color:#185fa5}
+.avatar-bot{background:#fbeaf0;color:#993556}
+.empty{text-align:center;color:#aaa;font-size:13px;padding:2.5rem}
+.chat-sel{display:flex;gap:8px;padding:14px 18px;border-bottom:1px solid #eee}
+.chat-sel select{flex:1;font-size:13px;padding:7px 12px;border:1px solid #e5e5e5;border-radius:8px;background:#fff}
+.chat-sel button{font-size:13px;padding:7px 14px;border:1px solid #e5e5e5;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px}
+.chat-sel button:hover{background:#f5f5f5}
+.url-bar{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 16px;margin-bottom:1.5rem;display:flex;align-items:center;gap:12px}
+.url-bar label{font-size:12px;color:#888;white-space:nowrap}
+.url-bar input{flex:1;font-size:13px;padding:5px 10px;border:1px solid #e5e5e5;border-radius:6px;font-family:monospace}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-dot"><i class="ti ti-sparkles"></i></div>
+    <div><div class="logo-text">AesthEase</div><div class="logo-sub">Admin</div></div>
+  </div>
+  <a class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+  <a class="nav-item" onclick="showPage('patients',this)"><i class="ti ti-users"></i> Patients</a>
+  <a class="nav-item" onclick="showPage('appointments',this)"><i class="ti ti-calendar"></i> Appointments</a>
+  <a class="nav-item" onclick="showPage('conversations',this)"><i class="ti ti-message-2"></i> Conversations</a>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <h1 id="page-title">Dashboard</h1>
+    <div class="auth-row">
+      <input type="password" id="token" placeholder="Admin token" value="aesthease-admin-2026">
+      <button onclick="connect()"><i class="ti ti-plug"></i> Connect</button>
+    </div>
+  </div>
+
+  <div class="url-bar">
+    <label>API URL</label>
+    <input type="text" id="base-url" value="https://studious-space-engine-q7644g5476jv3xjx7-8000.app.github.dev">
+  </div>
+
+  <div id="page-dashboard" class="page active">
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Total patients</div><div class="stat-value" id="s-patients">—</div></div>
+      <div class="stat"><div class="stat-label">Confirmed bookings</div><div class="stat-value" id="s-appts">—</div></div>
+      <div class="stat"><div class="stat-label">Cancelled</div><div class="stat-value" id="s-cancelled">—</div></div>
+      <div class="stat"><div class="stat-label">Messages in</div><div class="stat-value" id="s-msgs">—</div></div>
+      <div class="stat"><div class="stat-label">Channel split</div><div class="stat-value" id="s-wa">—</div><div class="stat-sub" id="s-ch-sub"></div></div>
+    </div>
+    <p style="color:#aaa;font-size:13px">Connect with your admin token to load live data.</p>
+  </div>
+
+  <div id="page-patients" class="page">
+    <div class="card">
+      <div class="card-header"><h2>All patients</h2></div>
+      <table>
+        <thead><tr><th>Name</th><th>Phone / ID</th><th>Channel</th><th>Age</th><th>Bookings</th><th>Messages</th><th>Joined</th></tr></thead>
+        <tbody id="patients-body"><tr><td colspan="7" class="empty">Connect to load</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="page-appointments" class="page">
+    <div class="card">
+      <div class="card-header">
+        <h2>Appointments</h2>
+        <div class="filter-row">
+          <select id="appt-filter" onchange="loadAppointments()">
+            <option value="all">All</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Patient</th><th>Service</th><th>Date & time</th><th>Status</th><th></th></tr></thead>
+        <tbody id="appts-body"><tr><td colspan="5" class="empty">Connect to load</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="page-conversations" class="page">
+    <div class="card">
+      <div class="card-header"><h2>Conversation history</h2></div>
+      <div class="chat-sel">
+        <select id="patient-sel"><option>— select a patient —</option></select>
+        <button onclick="loadMessages()"><i class="ti ti-refresh"></i> Load</button>
+      </div>
+      <div class="messages" id="msg-list"><div class="empty">Select a patient above</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let API='http://localhost:8000',TOKEN='aesthease-admin-2026',patients=[];
+const H=()=>({'x-admin-token':TOKEN,'Content-Type':'application/json'});
+function showPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('page-title').textContent=el.textContent.trim();
+}
+async function connect(){
+  API=document.getElementById('base-url').value.replace(/\/$/,'');
+  TOKEN=document.getElementById('token').value;
+  await loadStats();await loadPatients();await loadAppointments();
+}
+async function loadStats(){
+  try{
+    const r=await fetch(API+'/admin/stats',{headers:H()});
+    if(!r.ok){alert('Auth failed');return;}
+    const d=await r.json();
+    document.getElementById('s-patients').textContent=d.total_patients;
+    document.getElementById('s-appts').textContent=d.total_appointments;
+    document.getElementById('s-cancelled').textContent=d.cancelled;
+    document.getElementById('s-msgs').textContent=d.total_messages;
+    document.getElementById('s-wa').textContent='WA '+d.channels.whatsapp;
+    document.getElementById('s-ch-sub').textContent='FB '+d.channels.messenger+' · IG '+d.channels.instagram;
+  }catch(e){console.error(e);}
+}
+function chBadge(p){
+  if(p.startsWith('ig_'))return'<span class="badge badge-ig"><i class="ti ti-brand-instagram"></i> Instagram</span>';
+  if(p.startsWith('fb_'))return'<span class="badge badge-fb"><i class="ti ti-brand-facebook"></i> Messenger</span>';
+  return'<span class="badge badge-wa"><i class="ti ti-brand-whatsapp"></i> WhatsApp</span>';
+}
+function fmtD(s){if(!s)return'—';return new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+async function loadPatients(){
+  try{
+    const r=await fetch(API+'/admin/patients',{headers:H()});
+    patients=await r.json();
+    const sel=document.getElementById('patient-sel');
+    sel.innerHTML='<option>— select a patient —</option>';
+fetch(API+'/admin/conversation-phones',{headers:H()}).then(r=>r.json()).then(phones=>{phones.forEach(p=>{const o=document.createElement('option');o.value=p.phone;o.textContent=p.phone;sel.appendChild(o);});});
+    patients.forEach(p=>{const o=document.createElement('option');o.value=p.phone;o.textContent=p.name+' ('+p.phone+')';sel.appendChild(o);});
+    const tb=document.getElementById('patients-body');
+    if(!patients.length){tb.innerHTML='<tr><td colspan="7" class="empty">No patients yet</td></tr>';return;}
+    tb.innerHTML=patients.map(p=>`<tr>
+      <td><strong>${p.name}</strong></td>
+      <td style="font-family:monospace;font-size:12px;color:#888">${p.phone}</td>
+      <td>${chBadge(p.phone)}</td>
+      <td>${p.age||'—'}</td>
+      <td>${p.upcoming_appointments||0}</td>
+      <td>${p.total_messages||0}</td>
+      <td style="color:#aaa">${fmtD(p.created_at)}</td>
+    </tr>`).join('');
+  }catch(e){console.error(e);}
+}
+async function loadAppointments(){
+  const status=document.getElementById('appt-filter')?.value||'all';
+  try{
+    const r=await fetch(API+'/admin/appointments?status='+status,{headers:H()});
+    const appts=await r.json();
+    const tb=document.getElementById('appts-body');
+    if(!appts.length){tb.innerHTML='<tr><td colspan="5" class="empty">No appointments</td></tr>';return;}
+    tb.innerHTML=appts.map(a=>`<tr>
+      <td><strong>${a.patient_name}</strong><br><span style="font-size:11px;color:#aaa">${a.patient_phone}</span></td>
+      <td>${a.service}</td>
+      <td>${a.datetime_str}</td>
+      <td><span class="badge badge-${a.status}">${a.status}</span></td>
+      <td>${a.status==='confirmed'?`<button class="btn-sm" onclick="cancelAppt(${a.id})">Cancel</button>`:'—'}</td>
+    </tr>`).join('');
+  }catch(e){console.error(e);}
+}
+async function cancelAppt(id){
+  if(!confirm('Cancel appointment #'+id+'?'))return;
+  await fetch(API+'/admin/appointments/'+id+'/cancel',{method:'PUT',headers:H()});
+  await loadAppointments();await loadStats();
+}
+async function loadMessages(){
+  const phone=document.getElementById('patient-sel').value;
+  if(!phone||phone.startsWith('—'))return;
+  try{
+    const r=await fetch(API+'/admin/messages/'+encodeURIComponent(phone),{headers:H()});
+    const msgs=await r.json();
+    const c=document.getElementById('msg-list');
+    if(!msgs.length){c.innerHTML='<div class="empty">No messages yet</div>';return;}
+    c.innerHTML=msgs.map(m=>{
+      const isBot=m.role==='assistant';
+      const t=m.timestamp?new Date(m.timestamp).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
+      return`<div class="msg ${isBot?'bot':'user'}">
+        <div class="avatar ${isBot?'avatar-bot':'avatar-user'}">${isBot?'🌸':'P'}</div>
+        <div><div class="bubble">${m.content}</div><div class="msg-time">${t}</div></div>
+      </div>`;
+    }).join('');
+    c.scrollTop=c.scrollHeight;
+  }catch(e){console.error(e);}
+}
+</script>
+</body>
+</html>
